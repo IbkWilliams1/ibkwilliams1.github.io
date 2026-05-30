@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI & The Coming Labor Disconnect | Ibukun</title>
+  <meta name="description" content="AI is the operating system of global business. But the generation about to enter the workforce missed the apprenticeship window. Here's why that matters."/>
+  <meta property="og:title" content="AI & The Coming Labor Disconnect"/>
+  <meta property="og:description" content="The process knowledge gap no one is talking about."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:    #080808;
+      --offblack: #111111;
+      --card:     #161616;
+      --border:   #2a2a2a;
+      --amber:    #F0A500;
+      --amber-lt: #FFD166;
+      --green:    #1DB564;
+      --green-dk: #0E6B3C;
+      --rust:     #E05A2B;
+      --white:    #F5F0E8;
+      --muted:    #888880;
+      --serif:    'Syne', sans-serif;
+      --body:     'Instrument Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--body);
+      font-size: 17px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── KENTE PATTERN BACKGROUND ── */
+    .kente-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04;
+      background-image:
+        repeating-linear-gradient(0deg,   transparent, transparent 18px, var(--amber) 18px, var(--amber) 20px),
+        repeating-linear-gradient(90deg,  transparent, transparent 18px, var(--green) 18px, var(--green) 20px),
+        repeating-linear-gradient(45deg,  transparent, transparent 8px, var(--rust) 8px, var(--rust) 10px);
+    }
+
+    /* ── NOISE GRAIN OVERLAY ── */
+    body::after {
+      content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+    }
+
+    /* ── LAYOUT ── */
+    .wrap { position: relative; z-index: 2; max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-brand {
+      font-family: var(--serif); font-weight: 800; font-size: 15px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--amber);
+    }
+    .topbar-share {
+      display: flex; gap: 10px;
+    }
+    .topbar-share a {
+      font-family: var(--serif); font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topbar-share a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 140px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-geo {
+      position: absolute; top: 60px; right: -60px; width: 420px; height: 420px;
+      opacity: 0.07; pointer-events: none;
+    }
+    .hero-geo svg { width: 100%; height: 100%; }
+
+    .hero-tag {
+      font-family: var(--body); font-size: 12px; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 28px;
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0; animation: fadeUp 0.8s 0.1s forwards;
+    }
+    .hero-tag::before {
+      content: ''; width: 32px; height: 2px; background: var(--green); display: inline-block;
+    }
+
+    .hero h1 {
+      font-family: var(--serif); font-weight: 800;
+      font-size: clamp(2.6rem, 6.5vw, 5.2rem);
+      line-height: 1.06; letter-spacing: -0.02em;
+      max-width: 720px; margin-bottom: 32px;
+      opacity: 0; animation: fadeUp 0.9s 0.25s forwards;
+    }
+    .hero h1 em { font-style: normal; color: var(--amber); }
+    .hero h1 span.accent-green { color: var(--green); }
+
+    .hero-sub {
+      font-size: 1.15rem; color: #b0a898; max-width: 560px; line-height: 1.7;
+      margin-bottom: 48px;
+      opacity: 0; animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 20px;
+      opacity: 0; animation: fadeUp 0.9s 0.55s forwards;
+    }
+    .avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--rust));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--black);
+      flex-shrink: 0;
+    }
+    .meta-text { line-height: 1.4; }
+    .meta-name { font-family: var(--serif); font-weight: 700; font-size: 15px; color: var(--white); }
+    .meta-role { font-size: 13px; color: var(--muted); }
+
+    .hero-line {
+      position: absolute; bottom: 0; left: 24px; right: 24px; height: 1px;
+      background: linear-gradient(90deg, var(--amber) 0%, var(--green) 40%, transparent 100%);
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 0; }
+
+    /* ── THESIS BLOCK ── */
+    .thesis {
+      background: var(--card);
+      border-left: 4px solid var(--amber);
+      padding: 48px 40px;
+      margin: 0 -8px;
+      border-radius: 0 4px 4px 0;
+    }
+    .thesis-label {
+      font-family: var(--serif); font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 20px;
+    }
+    .thesis p {
+      font-size: 1.25rem; line-height: 1.72; color: var(--white); font-weight: 500;
+    }
+
+    /* ── SECTION HEADING ── */
+    .sec-label {
+      font-family: var(--serif); font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    }
+    h2 {
+      font-family: var(--serif); font-weight: 800;
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      line-height: 1.14; letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+    h2 em { font-style: normal; color: var(--amber); }
+    h2 .g { color: var(--green); }
+
+    p { color: #c0b9b0; margin-bottom: 18px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-top: 2px solid var(--amber);
+      border-bottom: 2px solid var(--amber);
+      padding: 32px 0;
+      margin: 48px 0;
+      text-align: center;
+    }
+    .pull-quote p {
+      font-family: var(--serif); font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+      font-weight: 700; line-height: 1.35; color: var(--white); margin: 0;
+    }
+    .pull-quote p em { font-style: normal; color: var(--amber); }
+
+    /* ── STAT CARDS ── */
+    .cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin: 40px 0;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-top: 3px solid; padding: 28px 24px; border-radius: 4px;
+    }
+    .card:nth-child(1) { border-top-color: var(--amber); }
+    .card:nth-child(2) { border-top-color: var(--green); }
+    .card:nth-child(3) { border-top-color: var(--rust); }
+    .card-num {
+      font-family: var(--serif); font-size: 2.8rem; font-weight: 800; line-height: 1;
+      margin-bottom: 8px;
+    }
+    .card:nth-child(1) .card-num { color: var(--amber); }
+    .card:nth-child(2) .card-num { color: var(--green); }
+    .card:nth-child(3) .card-num { color: var(--rust); }
+    .card p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 16px; margin: 60px 0;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-sym {
+      width: 32px; height: 32px; border: 2px solid var(--amber);
+      transform: rotate(45deg); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .divider-sym::after {
+      content: ''; width: 10px; height: 10px; background: var(--amber);
+    }
+
+    /* ── HIGHLIGHT BOX ── */
+    .highlight {
+      background: linear-gradient(135deg, rgba(30,181,100,0.08), rgba(240,165,0,0.06));
+      border: 1px solid rgba(30,181,100,0.2);
+      padding: 36px 32px; border-radius: 4px; margin: 40px 0;
+    }
+    .highlight p { color: var(--white); font-size: 1.05rem; }
+    .highlight p strong { color: var(--green); }
+
+    /* ── SHARE SECTION ── */
+    .share-section {
+      background: var(--offblack);
+      border-top: 1px solid var(--border);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .share-section h3 {
+      font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em;
+    }
+    .share-section h3 em { font-style: normal; color: var(--amber); }
+    .share-section p { color: var(--muted); max-width: 440px; margin: 0 auto 40px; }
+
+    .share-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--serif); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 14px 26px; border-radius: 3px;
+      cursor: pointer; text-decoration: none; border: none;
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.4); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-x        { background: var(--white); color: var(--black); }
+    .btn-linkedin { background: #0A66C2; color: #fff; }
+    .btn-whatsapp { background: #25D366; color: #000; }
+    .btn-copy     { background: var(--card); color: var(--white); border: 1px solid var(--border); }
+    .btn-copy.copied { background: var(--green); color: var(--black); border-color: var(--green); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    footer p { font-size: 13px; color: var(--muted); margin: 0; }
+    .footer-brand { font-family: var(--serif); font-weight: 800; font-size: 14px; color: var(--amber); }
+
+    /* ── REVEAL ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── PROGRESS BAR ── */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 200;
+      background: linear-gradient(90deg, var(--amber), var(--green));
+      width: 0%; transition: width 0.1s linear;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .topbar { padding: 14px 20px; }
+      .thesis { padding: 32px 24px; }
+      .share-section { padding: 60px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Reading progress bar -->
+<div id="progress"></div>
+<div class="kente-bg"></div>
+
+<!-- TOP NAV -->
+<nav class="topbar">
+  <div class="topbar-brand">Ibukun · Perspectives</div>
+  <div class="topbar-share">
+    <a href="#share">Share</a>
+    <a href="#breakdown">Read</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="hero-geo">
+    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="50" width="300" height="300" stroke="#F0A500" stroke-width="2"/>
+      <rect x="80" y="80" width="240" height="240" stroke="#1DB564" stroke-width="2" transform="rotate(15 200 200)"/>
+      <rect x="110" y="110" width="180" height="180" stroke="#E05A2B" stroke-width="2" transform="rotate(30 200 200)"/>
+      <rect x="140" y="140" width="120" height="120" stroke="#F0A500" stroke-width="2" transform="rotate(45 200 200)"/>
+      <circle cx="200" cy="200" r="60" stroke="#1DB564" stroke-width="1.5"/>
+      <line x1="50" y1="200" x2="350" y2="200" stroke="#F0A500" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="200" y1="50" x2="200" y2="350" stroke="#F0A500" stroke-width="1" stroke-dasharray="4 4"/>
+    </svg>
+  </div>
+
+  <p class="hero-tag">Workforce · Technology · Africa</p>
+
+  <h1>
+    AI Took the<br/>
+    <em>Apprenticeship.</em><br/>
+    Who Trains the<br/>
+    <span class="accent-green">Next Generation?</span>
+  </h1>
+
+  <p class="hero-sub">
+    AI is now the operating system of global business. But the generation about to enter the workforce missed the process-knowledge window. Here's why that gap is more dangerous than anyone is admitting.
+  </p>
+
+  <div class="hero-meta">
+    <div class="avatar">IB</div>
+    <div class="meta-text">
+      <div class="meta-name">Ibukun</div>
+      <div class="meta-role">Petroleum Analyst · 8 Years · West Africa</div>
+    </div>
+  </div>
+
+  <div class="hero-line"></div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- THESIS -->
+  <section id="breakdown">
+    <div class="wrap">
+      <div class="thesis reveal">
+        <div class="thesis-label">The Core Argument</div>
+        <p>
+          AI is a force multiplier, not a force generator. It amplifies what you already understand.
+          The danger is not that AI is too powerful — it is that the systems meant to build
+          human expertise before AI arrives have been quietly eliminated.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="divider reveal">
+      <div class="divider-line"></div>
+      <div class="divider-sym"></div>
+      <div class="divider-line"></div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: AI AS OS -->
+  <section>
+    <div class="wrap reveal">
+      <p class="sec-label">01 — The New Reality</p>
+      <h2>AI Is the <em>Operating System</em><br/>of Global Business</h2>
+      <p>
+        Every major industry has crossed a threshold. AI is no longer a tool professionals choose to use — it is the infrastructure through which work gets done. Proposals, analysis, logistics, legal review, code, financial modelling — the baseline expectation has shifted permanently.
+      </p>
+      <p>
+        The working generation — Millennials and Gen Z professionals already in the field — did not adopt AI from a position of comfort. They were forced into it to sustain relevance. And what they discovered changed everything: AI could accomplish in hours what had previously taken weeks. The adoption was not enthusiastic. It was survival.
+      </p>
+
+      <div class="cards">
+        <div class="card reveal">
+          <div class="card-num">8yrs</div>
+          <p>Of domain expertise the author brings to every AI-assisted analysis</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-num">3 Gen</div>
+          <p>Millennials, Gen Z, and Gen Alpha — each inheriting a fundamentally different workplace</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-num">0</div>
+          <p>Entry-level roles being created to build the tacit knowledge AI now replaces</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="pull-quote reveal">
+      <p>
+        "You cannot introduce AI into a process<br/>
+        you are <em>not part of.</em>"
+      </p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: PROCESS KNOWLEDGE -->
+  <section>
+    <div class="wrap reveal">
+      <p class="sec-label">02 — The Fundamental Gap</p>
+      <h2>Process Knowledge Is<br/><em>Not Transferable</em> by Curriculum</h2>
+      <p>
+        In the petroleum industry — in any technical industry — the value of experience is not the title or the degree. It is the accumulated instinct that tells you when a number is wrong, when a contract clause is suspicious, when a workflow is about to break. That instinct is built by participation. By being inside the process.
+      </p>
+      <p>
+        The working generation integrated AI into their workflows precisely because they already understood those workflows. They knew what to automate, what to question, and what the AI could not see. The fresh college graduate has studied theories of processes — not the processes themselves.
+      </p>
+      <p>
+        This is not a failure of the graduate. It is a structural mismatch between the pace of AI adoption and the pace of curriculum reform.
+      </p>
+
+      <div class="highlight reveal">
+        <p>
+          <strong>The Real Danger:</strong> Universities are producing AI-literate graduates
+          who lack the domain literacy to deploy that AI meaningfully. Employers are
+          discovering this gap in real time — and they have no roadmap to close it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="divider reveal">
+      <div class="divider-line"></div>
+      <div class="divider-sym"></div>
+      <div class="divider-line"></div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: ENTRY-LEVEL PIPELINE -->
+  <section>
+    <div class="wrap reveal">
+      <p class="sec-label">03 — The Structural Crisis</p>
+      <h2>AI Eliminated the<br/><span class="g">Apprenticeship Layer</span></h2>
+      <p>
+        The analyst. The field assistant. The junior associate. These roles were not just job titles — they were the institutions through which tacit knowledge was transferred across generations. Supervised participation. Mentored error. The slow accumulation of judgment through proximity to experienced professionals.
+      </p>
+      <p>
+        Those are precisely the roles AI is eliminating or compressing first. Why hire three junior analysts when one senior analyst with AI can produce the same output in half the time?
+      </p>
+      <p>
+        The consequence is both logical and catastrophic: if AI removes the apprenticeship layer, the next generation has no sanctioned pathway into the domain expertise that makes AI useful in the first place. You cannot skip from graduation to senior-level AI-augmented work. The middle layer was the ladder. The ladder is being taken away.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="pull-quote reveal">
+      <p>
+        "The middle layer was the ladder.<br/>
+        The ladder is being <em>taken away.</em>"
+      </p>
+    </div>
+  </div>
+
+  <!-- SECTION 4: GEN ALPHA -->
+  <section>
+    <div class="wrap reveal">
+      <p class="sec-label">04 — The Coming Generation</p>
+      <h2>Gen Alpha: <em>AI-Native,</em><br/>Domain-Blind</h2>
+      <p>
+        Generation Alpha will arrive in the workforce already fluent in AI interfaces, prompting, and tool orchestration. They will not need to be taught how to use AI. That is the one thing we will not need to worry about.
+      </p>
+      <p>
+        The concern is different: tool fluency is not domain knowledge. A student who has used a calculator their entire life still needs to understand what they are calculating — and why. Gen Alpha may interface with processes they have never participated in, using AI to produce outputs they cannot validate, in domains they have never been trained to question.
+      </p>
+      <p>
+        This is not a criticism of a generation. It is an indictment of the institutional response — or lack of it — from educators, policymakers, and industry leaders who are watching this gap form and have not yet agreed on how to close it.
+      </p>
+
+      <div class="highlight reveal">
+        <p>
+          <strong>The Paradox:</strong> Every generation has learned processes from scratch.
+          But this is the first generation where the entry-level roles that built that
+          foundation are being structurally eliminated faster than new ones are being designed.
+          The pipeline is not slow — it is <strong style="color:var(--rust)">broken.</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="divider reveal">
+      <div class="divider-line"></div>
+      <div class="divider-sym"></div>
+      <div class="divider-line"></div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: WHAT THIS MEANS -->
+  <section>
+    <div class="wrap reveal">
+      <p class="sec-label">05 — The Path Forward</p>
+      <h2>Survival Requires<br/><em>Deliberate</em> Process Exposure</h2>
+      <p>
+        The graduates who will survive this transition are not those who studied AI theoretically, nor simply those who are "AI-literate." They are those who deliberately embed themselves in real processes — through internships, apprenticeships, freelance engagements, or entrepreneurial exposure — early and aggressively enough to build domain anchoring before the entry-level market closes further.
+      </p>
+      <p>
+        AI fluency without process fluency is an engine with no chassis. The power is real. But it has nowhere to go.
+      </p>
+      <p>
+        The responsibility does not rest with graduates alone. Industry must reinvent the apprenticeship. Universities must mandate embedded process exposure, not just AI coursework. Governments in Africa and globally must treat this workforce transition as the structural emergency it is — before the gap between AI-native tool fluency and domain-blind graduates becomes a permanent feature of the labour market.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- SHARE SECTION -->
+<div class="share-section" id="share">
+  <div style="max-width:600px; margin: 0 auto;">
+    <h3>This Conversation<br/>Needs to Happen <em>Now.</em></h3>
+    <p>Share this with a graduate, a hiring manager, a professor, a policymaker — anyone deciding the future of work.</p>
+
+    <div class="share-btns">
+      <a class="btn btn-x" id="share-x" href="#" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share on X
+      </a>
+      <a class="btn btn-linkedin" id="share-li" href="#" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a class="btn btn-whatsapp" id="share-wa" href="#" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <button class="btn btn-copy" id="copy-btn" onclick="copyLink()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Link
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="wrap">
+  <p>© 2025 <span class="footer-brand">Ibukun</span> · Petroleum Analyst & Workforce Commentator · West Africa</p>
+  <p style="font-size:12px; color: #555;">Written from 8 years inside the process.</p>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progress').style.width = (scrollTop / scrollHeight * 100) + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Share URLs
+  const pageUrl = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent('AI eliminated the apprenticeship layer. The generation entering the workforce never got to build process knowledge. Here\'s why that\'s the most underreported workforce crisis right now.');
+
+  document.getElementById('share-x').href =
+    `https://twitter.com/intent/tweet?text=${text}&url=${pageUrl}`;
+  document.getElementById('share-li').href =
+    `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
+  document.getElementById('share-wa').href =
+    `https://wa.me/?text=${text}%20${pageUrl}`;
+
+  // Copy link
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy Link`;
+      }, 2500);
+    });
+  }
+</script>
+</body>
+</html>
