@@ -18,6 +18,99 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ── Navbar ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(1.2rem, 5vw, 3rem);
+    height: 52px;
+    background: rgba(245, 240, 232, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(184,145,42,0.18);
+  }
+
+  .nav-brand {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-brand span {
+    color: var(--stone);
+    margin: 0 0.5em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-links a.home-link::before {
+    content: '← ';
+    color: var(--stone);
+  }
+
+  /* ── Author byline ── */
+  .author-block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.8rem 0 0;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(184,145,42,0.22);
+  }
+
+  .author-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--rust);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--parchment);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .author-info strong {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--deep);
+    letter-spacing: 0.01em;
+  }
+
+  .author-info span {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.82rem;
+    color: var(--stone);
+    letter-spacing: 0.04em;
+  }
+
   body {
     background-color: var(--parchment);
     color: var(--ink);
@@ -41,7 +134,7 @@
   .page {
     max-width: 760px;
     margin: 0 auto;
-    padding: clamp(2rem, 8vw, 5rem) var(--margin);
+    padding: clamp(4.5rem, 10vw, 6.5rem) var(--margin) clamp(2rem, 8vw, 5rem);
     position: relative;
   }
 
@@ -287,6 +380,15 @@
 </style>
 </head>
 <body>
+
+<nav>
+  <a class="nav-brand" href="https://ibkwilliams1.github.io">Ibukun <span>·</span> Perspectives</a>
+  <div class="nav-links">
+    <a href="https://ibkwilliams1.github.io" class="home-link">Home</a>
+    <a href="https://www.linkedin.com/in/oluwafemi-ibukun-williams" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</nav>
+
 <div class="page">
 
   <div class="top-ornament">Gospel of John · Chapter 5</div>
@@ -356,8 +458,22 @@
       <span class="footer-mark">✦</span>
     </div>
 
+    <div class="author-block">
+      <div class="author-avatar">OI</div>
+      <div class="author-info">
+        <strong>Oluwafemi Ibukun Williams</strong>
+        <span>Petroleum Analyst · DevOps Learner · Writer</span>
+      </div>
+    </div>
+
   </article>
 
 </div>
+<!-- GoatCounter Analytics -->
+<script
+  data-goatcounter="https://ibkwilliams1.goatcounter.com/count"
+  async src="//gc.zgo.at/count.js">
+</script>
+
 </body>
 </html>
