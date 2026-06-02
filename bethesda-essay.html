@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Pool and the Man — John 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #1a1612;
+    --parchment: #f5f0e8;
+    --gold: #b8912a;
+    --rust: #8b3a2a;
+    --stone: #9e9488;
+    --deep: #2c2217;
+    --margin: clamp(1.5rem, 6vw, 5rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    line-height: 1.85;
+    min-height: 100vh;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(2rem, 8vw, 5rem) var(--margin);
+    position: relative;
+  }
+
+  /* Decorative top rule */
+  .top-ornament {
+    text-align: center;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+
+  .top-ornament::before,
+  .top-ornament::after {
+    content: '— ✦ —';
+    margin: 0 1em;
+    color: var(--stone);
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .reference {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--deep);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--stone);
+    margin-top: 0.8rem;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .divider-mark {
+    color: var(--gold);
+    font-size: 1.1rem;
+  }
+
+  /* Article body */
+  article {
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  p {
+    margin-bottom: 1.6rem;
+    font-weight: 300;
+  }
+
+  /* Drop cap */
+  p.dropcap::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.2rem;
+    font-weight: 600;
+    color: var(--rust);
+    float: left;
+    line-height: 0.75;
+    margin-right: 0.1em;
+    margin-top: 0.08em;
+    padding-top: 0.05em;
+  }
+
+  /* Section headings */
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--deep);
+    margin: 2.8rem 0 1rem;
+    letter-spacing: 0.01em;
+    border-left: 3px solid var(--gold);
+    padding-left: 1rem;
+  }
+
+  /* Pull quote */
+  blockquote {
+    margin: 2.5rem -1rem;
+    padding: 1.6rem 2rem;
+    border-left: none;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+    background: rgba(184, 145, 42, 0.05);
+    position: relative;
+  }
+
+  blockquote::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.35;
+    position: absolute;
+    top: -0.6rem;
+    left: 0.5rem;
+    line-height: 1;
+  }
+
+  blockquote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--deep);
+    line-height: 1.65;
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  /* System list */
+  .system-list {
+    list-style: none;
+    margin: 1.5rem 0 1.5rem 0;
+    padding: 0;
+    border: 1px solid rgba(184,145,42,0.25);
+    background: rgba(255,255,255,0.35);
+  }
+
+  .system-list li {
+    padding: 0.7rem 1.4rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--deep);
+    border-bottom: 1px solid rgba(184,145,42,0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .system-list li:last-child { border-bottom: none; }
+
+  .system-list li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Scripture callout */
+  .scripture {
+    margin: 2rem 0;
+    padding: 1.2rem 1.6rem;
+    background: var(--deep);
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.18rem;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .scripture-ref {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-top: 0.6rem;
+    font-style: normal;
+  }
+
+  /* Closing */
+  .closing {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(184,145,42,0.3);
+    text-align: center;
+  }
+
+  .closing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--stone);
+    margin: 0;
+  }
+
+  .footer-mark {
+    color: var(--gold);
+    font-size: 1.4rem;
+    display: block;
+    margin-top: 1.2rem;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    blockquote { margin: 2rem 0; }
+    p.dropcap::first-letter { font-size: 3.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top-ornament">Gospel of John · Chapter 5</div>
+
+  <header>
+    <div class="reference">A Theological & Social Interpretation</div>
+    <h1>The Pool,<br/><em>the Man,</em><br/>and the System</h1>
+    <p class="subtitle">What Bethesda reveals about waiting, access, and liberation</p>
+  </header>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+
+  <article>
+
+    <p class="dropcap">The Pool of Bethesda was not merely a body of water. It was a system — a managed architecture of hope — and like all such systems, it was defined less by whom it helped than by the far greater number it could not.</p>
+
+    <p>According to the narrative in John 5, many sick people — blind, lame, paralysed — gathered around its five porches. The belief was that when the water stirred, the first person to enter would be healed. One miracle. One opening. An unknown interval before the next.</p>
+
+    <h2>What the Pool Represents</h2>
+
+    <p>Stripped of its religious detail, the pool embodies a particular kind of system familiar to every generation:</p>
+
+    <ul class="system-list">
+      <li>Many have needs, and few will receive resolution</li>
+      <li>People wait indefinitely for occasional breakthroughs</li>
+      <li>Success depends on access, timing, or connection</li>
+      <li>The system persists not by solving the problem, but by managing it</li>
+    </ul>
+
+    <p>The man who had been ill for thirty-eight years gives the system its most damning indictment — not with anger, but with a single, exhausted sentence: <em>"I have no one to help me into the pool when the water is stirred."</em> His complaint was structural. He lacked not faith, not will, not desire — he lacked access. He was not outside the system; he had been inside it for decades, just never close enough to the front.</p>
+
+    <h2>The Bypass</h2>
+
+    <p>What makes the account theologically remarkable is what Jesus did not do. He did not help the man reach the water. He did not improve his position in the queue. He did not advocate for a fairer system of entry.</p>
+
+    <div class="scripture">
+      "Get up! Pick up your mat and walk."
+      <span class="scripture-ref">John 5:8 — NIV</span>
+    </div>
+
+    <p>This was a bypass, not a reform. Jesus did not engage the pool's logic on its own terms. He redirected the source of the man's expectation entirely — from the stirred water to the spoken word. The healing did not come through the system; it came despite it, around it, and in full disregard of it.</p>
+
+    <blockquote>
+      <p>Your destiny is not tied to this system of waiting. What you have been expecting from the pool is already available through a different source.</p>
+    </blockquote>
+
+    <h2>The Modern Parallel</h2>
+
+    <p>Applied honestly to contemporary institutions — churches, mosques, governments, social welfare structures — the Bethesda model is worth examining with some discomfort. Where thousands gather, hope is real, and breakthroughs do occur. But the question that deserves an honest answer is whether the institutions facilitating that gathering are primarily eliminating problems, or primarily sustaining the conditions under which those problems can be hoped away.</p>
+
+    <p>The New Testament church of Acts presents a contrasting vision. Believers were not positioned as passive recipients awaiting occasional divine interventions. They fed the poor. They healed the sick. They settled disputes. They redistributed resources. They were, in the language of that era, agents — not audience.</p>
+
+    <p>The distinction is not minor. A community that produces agents of transformation operates by a different logic than one that produces faithful waiters. Both may be sincere. Both may be prayerful. But only one of them asks the harder question: what am I meant to do while waiting for the water to stir?</p>
+
+    <h2>The Enduring Challenge</h2>
+
+    <blockquote>
+      <p>The Pool of Bethesda was a system that managed suffering without eliminating it. Jesus did not improve the system — He liberated a man from dependence on it. The challenge for modern faith communities is whether they are producing people who can rise and walk, or merely maintaining larger pools where people keep waiting for their turn.</p>
+    </blockquote>
+
+    <p>That challenge does not indict faith. It refines it. The man at the pool was not wrong to be there — he had nowhere else to go. But the encounter at Bethesda suggests that genuine transformation rarely arrives through the channels the system has prepared for it. It tends to arrive on an otherwise ordinary day, through an unexpected encounter, from a direction no one was watching.</p>
+
+    <p>The mat the man carried away was not a trophy. It was evidence. Evidence that he no longer needed what it used to represent — the bedding of a life spent waiting at the edge of a pool that was never going to move fast enough for him.</p>
+
+    <div class="closing">
+      <p>The question left standing at the edge of the pool is not whether miracles happen.<br/>It is whether we are building communities of rising, or communities of waiting.</p>
+      <span class="footer-mark">✦</span>
+    </div>
+
+  </article>
+
+</div>
+</body>
+</html>
