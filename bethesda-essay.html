@@ -373,6 +373,26 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* Visitor counter */
+  .visitor-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(184,145,42,0.2);
+    background: rgba(255,255,255,0.3);
+  }
+
+  .visitor-counter span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
   @media (max-width: 480px) {
     blockquote { margin: 2rem 0; }
     p.dropcap::first-letter { font-size: 3.2rem; }
@@ -464,6 +484,15 @@
         <strong>Oluwafemi Ibukun Williams</strong>
         <span>Petroleum Analyst · DevOps Learner · Writer</span>
       </div>
+    </div>
+
+    <div class="visitor-counter">
+      <span>Page Views</span>
+      <img
+        src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fibkwilliams1.github.io%2Fbethesda-essay.html&count_bg=%23b8912a&title_bg=%232c2217&icon=eye&icon_color=%23f5f0e8&title=Today+%2F+Total&edge_flat=true"
+        alt="Visitor counter"
+        style="height:22px;"
+      />
     </div>
 
   </article>
