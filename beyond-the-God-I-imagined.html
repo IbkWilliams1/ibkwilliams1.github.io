@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Beyond the God I Imagined — Matthew 5</title>
+<meta name="description" content="A contemplative reflection on deconstruction, the face of Christ, and the slow death of our distortions of God. Anyone who has seen Him has seen the Father." />
+<!-- Open Graph (for Facebook / LinkedIn shares) -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Beyond the God I Imagined" />
+<meta property="og:description" content="Deconstruction often feels like losing God when, in reality, we may simply be losing our misconceptions about God." />
+<meta property="og:url" content="https://ibkwilliams1.github.io/beyond-the-god-i-imagined.html" />
+<meta property="og:site_name" content="Ibukun · Perspectives" />
+<meta name="twitter:card" content="summary" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #1a1612;
+    --parchment: #f5f0e8;
+    --gold: #b8912a;
+    --rust: #8b3a2a;
+    --stone: #9e9488;
+    --deep: #2c2217;
+    --margin: clamp(1.5rem, 6vw, 5rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Navbar ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(1.2rem, 5vw, 3rem);
+    height: 52px;
+    background: rgba(245, 240, 232, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(184,145,42,0.18);
+  }
+
+  .nav-brand {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-brand span {
+    color: var(--stone);
+    margin: 0 0.5em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-links a.home-link::before {
+    content: '← ';
+    color: var(--stone);
+  }
+
+  /* ── Author byline ── */
+  .author-block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.8rem 0 0;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(184,145,42,0.22);
+  }
+
+  .author-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--rust);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--parchment);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .author-info strong {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--deep);
+    letter-spacing: 0.01em;
+  }
+
+  .author-info span {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.82rem;
+    color: var(--stone);
+    letter-spacing: 0.04em;
+  }
+
+  body {
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    line-height: 1.85;
+    min-height: 100vh;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(4.5rem, 10vw, 6.5rem) var(--margin) clamp(2rem, 8vw, 5rem);
+    position: relative;
+  }
+
+  /* Decorative top rule */
+  .top-ornament {
+    text-align: center;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+
+  .top-ornament::before,
+  .top-ornament::after {
+    content: '— ✦ —';
+    margin: 0 1em;
+    color: var(--stone);
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .reference {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--deep);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--stone);
+    margin-top: 0.8rem;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .divider-mark {
+    color: var(--gold);
+    font-size: 1.1rem;
+  }
+
+  /* Article body */
+  article {
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  p {
+    margin-bottom: 1.6rem;
+    font-weight: 300;
+  }
+
+  /* Drop cap */
+  p.dropcap::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.2rem;
+    font-weight: 600;
+    color: var(--rust);
+    float: left;
+    line-height: 0.75;
+    margin-right: 0.1em;
+    margin-top: 0.08em;
+    padding-top: 0.05em;
+  }
+
+  /* Section headings */
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--deep);
+    margin: 2.8rem 0 1rem;
+    letter-spacing: 0.01em;
+    border-left: 3px solid var(--gold);
+    padding-left: 1rem;
+  }
+
+  /* Pull quote */
+  blockquote {
+    margin: 2.5rem -1rem;
+    padding: 1.6rem 2rem;
+    border-left: none;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+    background: rgba(184, 145, 42, 0.05);
+    position: relative;
+  }
+
+  blockquote::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.35;
+    position: absolute;
+    top: -0.6rem;
+    left: 0.5rem;
+    line-height: 1;
+  }
+
+  blockquote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--deep);
+    line-height: 1.65;
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  /* System list */
+  .system-list {
+    list-style: none;
+    margin: 1.5rem 0 1.5rem 0;
+    padding: 0;
+    border: 1px solid rgba(184,145,42,0.25);
+    background: rgba(255,255,255,0.35);
+  }
+
+  .system-list li {
+    padding: 0.7rem 1.4rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--deep);
+    border-bottom: 1px solid rgba(184,145,42,0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .system-list li:last-child { border-bottom: none; }
+
+  .system-list li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Scripture callout */
+  .scripture {
+    margin: 2rem 0;
+    padding: 1.2rem 1.6rem;
+    background: var(--deep);
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.18rem;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .scripture-ref {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-top: 0.6rem;
+    font-style: normal;
+  }
+
+  /* ── Prayer panel (added for this reflection) ── */
+  .prayer {
+    margin: 3rem 0;
+    padding: 2.1rem 2.2rem;
+    background: rgba(184,145,42,0.05);
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+    text-align: center;
+  }
+
+  .prayer .label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 1.3rem;
+  }
+
+  .prayer p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.22rem;
+    color: var(--deep);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .prayer .amen {
+    display: block;
+    margin-top: 1.2rem;
+    font-family: 'Cinzel', serif;
+    font-style: normal;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    color: var(--gold);
+  }
+
+  /* ── Contemplative practice (added for this reflection) ── */
+  .practice {
+    margin: 3rem 0 0;
+    padding: 1.9rem 2rem;
+    border: 1px solid rgba(184,145,42,0.25);
+    background: rgba(255,255,255,0.35);
+  }
+
+  .practice .label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 1rem;
+  }
+
+  .practice p {
+    font-family: 'Crimson Pro', serif;
+    font-weight: 300;
+    margin-bottom: 1rem;
+  }
+
+  .practice p:last-child { margin-bottom: 0; }
+
+  .practice .question {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--deep);
+    line-height: 1.5;
+    margin: 0.4rem 0 1.2rem;
+  }
+
+  .practice .mantra {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--rust);
+    text-align: center;
+    margin: 1.4rem 0 0;
+  }
+
+  /* ── Emphatic couplet (added for this reflection) ── */
+  .couplet {
+    text-align: center;
+    margin: 2.8rem 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.55rem;
+    line-height: 1.55;
+  }
+
+  .couplet span { display: block; }
+  .couplet .die  { color: var(--stone); }
+  .couplet .rise { color: var(--rust); }
+
+  /* Closing */
+  .closing {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(184,145,42,0.3);
+    text-align: center;
+  }
+
+  .closing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--stone);
+    margin: 0;
+  }
+
+  .selah {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 2.4rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+  }
+
+  .thanks {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  .footer-mark {
+    color: var(--gold);
+    font-size: 1.4rem;
+    display: block;
+    margin-top: 1.2rem;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Visitor counter */
+  .visitor-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(184,145,42,0.2);
+    background: rgba(255,255,255,0.3);
+  }
+
+  .visitor-counter span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  @media (max-width: 480px) {
+    blockquote { margin: 2rem 0; }
+    p.dropcap::first-letter { font-size: 3.2rem; }
+    .prayer, .practice { padding-left: 1.4rem; padding-right: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://ibkwilliams1.github.io">Ibukun <span>·</span> Perspectives</a>
+  <div class="nav-links">
+    <a href="https://ibkwilliams1.github.io" class="home-link">Home</a>
+    <a href="https://www.linkedin.com/in/oluwafemi-ibukun-williams" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="top-ornament">Sermon on the Mount · Matthew 5</div>
+
+  <header>
+    <div class="reference">A Contemplative Reflection</div>
+    <h1>Beyond the God<br/><em>I Imagined</em></h1>
+    <p class="subtitle">On losing our images of God — and finding Him in the face of Christ</p>
+  </header>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+
+  <article>
+
+    <div class="scripture">
+      “You have heard it said… but I say to you…”
+      <span class="scripture-ref">Matthew 5:21–22</span>
+    </div>
+
+    <p class="dropcap">One of the most challenging aspects of spiritual growth is discovering that many of the things we thought were God were actually our projections onto God.</p>
+
+    <p>We often inherit images of God from family, culture, church traditions, fears, and personal wounds. Sometimes God becomes a cosmic scorekeeper. Sometimes a distant ruler. Sometimes a disappointed parent who is never quite satisfied.</p>
+
+    <h2>The Method of Jesus</h2>
+
+    <p>Jesus spent much of His ministry dismantling these false images. Again and again He said, <em>“You have heard it said… but I say to you.”</em></p>
+
+    <p>He was not abolishing truth. He was unveiling a deeper truth.</p>
+
+    <h2>Show Us the Father</h2>
+
+    <p>When Philip asked Jesus, “Show us the Father,” Jesus replied:</p>
+
+    <div class="scripture">
+      “Anyone who has seen me has seen the Father.”
+      <span class="scripture-ref">John 14:9</span>
+    </div>
+
+    <blockquote>
+      <p>The ultimate revelation of God is not fear. It is Christ.</p>
+    </blockquote>
+
+    <p>If an image of God contradicts the self-giving love revealed in Jesus, it deserves to be questioned. This can feel unsettling.</p>
+
+    <h2>When Questions Feel Like Loss</h2>
+
+    <p>Deconstruction often feels like losing God when, in reality, we may simply be losing our misconceptions about God. The good news is that Christ is not threatened by our questions.</p>
+
+    <blockquote>
+      <p>Truth does not fear examination. Love does not fear honesty.</p>
+    </blockquote>
+
+    <p>Sometimes faith grows not by adding new beliefs but by releasing old distortions.</p>
+
+    <h2>Abba</h2>
+
+    <p>The Aramaic world of Jesus emphasized relationship over abstraction. The word Jesus used for God, <em>Abba</em>, carries the intimacy of a beloved parent rather than the distance of a remote monarch.</p>
+
+    <p>Jesus did not come merely to teach doctrines about God. He came to reveal what God has always been like.</p>
+
+    <h2>The Cross as Unveiling</h2>
+
+    <p>The Cross becomes the ultimate unveiling:</p>
+
+    <blockquote>
+      <p>God absorbs violence rather than inflicting it, forgives rather than retaliates, and restores rather than rejects.</p>
+    </blockquote>
+
+    <h2>A Pattern Through Scripture</h2>
+
+    <p>Throughout Scripture, humanity repeatedly mistakes God’s character.</p>
+
+    <ul class="system-list">
+      <li>Adam hides.</li>
+      <li>Israel fears.</li>
+      <li>Jonah resents mercy.</li>
+      <li>The religious leaders reject grace.</li>
+    </ul>
+
+    <p>Yet God continually reveals Himself as more compassionate than people imagined. The deeper pattern points toward Christ, who becomes the living interpretation of God’s heart.</p>
+
+    <h2>What Dies, and What Lives</h2>
+
+    <p>Many people fear that questioning inherited beliefs will destroy their faith. Sometimes it does destroy something. But often what dies is not faith itself.</p>
+
+    <p>What dies is a version of God built from fear, control, certainty, or exclusion. The resurrection pattern applies here too:</p>
+
+    <div class="couplet">
+      <span class="die">False images die.</span>
+      <span class="rise">Deeper truth emerges.</span>
+    </div>
+
+    <div class="prayer">
+      <span class="label">Let Us Pray</span>
+      <p>
+        Abba,<br/>
+        Give me courage to release every image of You<br/>
+        that is smaller than the love revealed in Christ.<br/>
+        Where fear has distorted my vision, bring light.<br/>
+        Where shame has hidden Your face, bring healing.<br/>
+        Where certainty has become an idol, teach me humility.<br/>
+        Lead me beyond the God I have imagined<br/>
+        into the God who truly is.
+      </p>
+      <span class="amen">Amen</span>
+    </div>
+
+    <div class="practice">
+      <span class="label">Contemplative Practice</span>
+      <p>Spend a few moments reflecting on this question:</p>
+      <p class="question">What image of God am I carrying that looks different from Jesus?</p>
+      <p>Do not judge your answer. Simply hold it before Christ. Then sit quietly and repeat:</p>
+      <p class="mantra">“Jesus, show me the Father’s heart.”</p>
+      <p>Allow that prayer to accompany you throughout the day.</p>
+    </div>
+
+    <div class="closing">
+      <span class="selah">Selah</span>
+      <span class="thanks">Thanks for reading</span>
+      <span class="footer-mark">✦</span>
+    </div>
+
+    <div class="author-block">
+      <div class="author-avatar">OI</div>
+      <div class="author-info">
+        <strong>Oluwafemi Ibukun Williams</strong>
+        <span>Petroleum Analyst · DevOps Learner · Writer</span>
+      </div>
+    </div>
+
+    <div class="visitor-counter">
+      <span>Page Views</span>
+      <img
+        src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fibkwilliams1.github.io%2Fbeyond-the-god-i-imagined.html&count_bg=%23b8912a&title_bg=%232c2217&icon=eye&icon_color=%23f5f0e8&title=Today+%2F+Total&edge_flat=true"
+        alt="Visitor counter"
+        style="height:22px;"
+      />
+    </div>
+
+  </article>
+
+</div>
+<!-- GoatCounter Analytics -->
+<script
+  data-goatcounter="https://ibkwilliams1.goatcounter.com/count"
+  async src="//gc.zgo.at/count.js">
+</script>
+
+</body>
+</html>
