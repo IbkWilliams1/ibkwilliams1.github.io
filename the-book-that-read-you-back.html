@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Books That Read You Back — IBUKUN · PERSPECTIVES</title>
+<meta name="description" content="In the age of AI everyone gets the same summaries, the same takeaways, the same polished notes. The edge is no longer access to intelligence — it is the reader you become. An essay on judgment, taste, and why great leaders read." />
+<meta name="author" content="Oluwafemi Ibukun Williams" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="The Books That Read You Back" />
+<meta property="og:description" content="AI will hand everyone the same summaries. What it can never hand you is the reader you become." />
+<meta property="og:url" content="https://ibkwilliams1.github.io/the-books-that-read-you-back.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --ink:#16130f;          /* warm near-black masthead/footer */
+    --ink-soft:#231e18;     /* raised dark panel */
+    --paper:#f6f1e7;        /* warm cream reading body */
+    --text:#1d1a15;         /* body ink on paper */
+    --muted-dark:#9a8f7d;   /* muted on dark */
+    --muted-paper:#6c6253;  /* muted on paper */
+    --gold:#b8862e;         /* antique gold accent */
+    --gold-bright:#d2a googly; /* placeholder-removed */
+    --gold-on-dark:#d6a948; /* gold that glows on dark */
+    --rule-paper:#dccfba;   /* hairline on paper */
+    --rule-dark:#3a3228;    /* hairline on dark */
+    --measure:40rem;        /* reading measure */
+    --serif-display:"Fraunces", Georgia, "Times New Roman", serif;
+    --serif-body:"Newsreader", Georgia, "Times New Roman", serif;
+    --sans:"Inter", system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:var(--serif-body);
+    font-weight:400;
+    line-height:1.72;
+    font-size:1.18rem;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ::selection{ background:var(--gold); color:#fff; }
+  :focus-visible{ outline:2px solid var(--gold-on-dark); outline-offset:3px; border-radius:2px; }
+
+  /* ---------- Navbar ---------- */
+  .nav{
+    position:fixed; inset:0 0 auto 0; z-index:50;
+    background:rgba(22,19,15,0.94);
+    backdrop-filter:saturate(140%) blur(6px);
+    border-bottom:1px solid var(--rule-dark);
+  }
+  .nav__inner{
+    max-width:72rem; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0.85rem 1.4rem;
+  }
+  .wordmark{
+    font-family:var(--sans);
+    font-weight:600; font-size:0.78rem;
+    letter-spacing:0.22em; text-transform:uppercase;
+    color:#f3ead8; text-decoration:none; white-space:nowrap;
+  }
+  .wordmark span{ color:var(--gold-on-dark); }
+  .nav__links{ display:flex; gap:1.6rem; }
+  .nav__links a{
+    font-family:var(--sans);
+    font-weight:500; font-size:0.72rem;
+    letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--muted-dark); text-decoration:none;
+    transition:color .2s ease;
+  }
+  .nav__links a:hover{ color:var(--gold-on-dark); }
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    background:var(--ink);
+    color:#f3ead8;
+    padding:8.5rem 1.4rem 4.2rem;
+    border-bottom:3px solid var(--gold);
+  }
+  .masthead__inner{ max-width:54rem; margin:0 auto; }
+  .kicker{
+    font-family:var(--sans);
+    font-size:0.72rem; font-weight:600;
+    letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--gold-on-dark);
+    margin:0 0 1.4rem;
+  }
+  .headline{
+    font-family:var(--serif-display);
+    font-optical-sizing:auto;
+    font-weight:800;
+    font-size:clamp(2.6rem, 7vw, 4.7rem);
+    line-height:1.02;
+    letter-spacing:-0.012em;
+    margin:0 0 1.5rem;
+    color:#fbf6ec;
+  }
+  .dek{
+    font-family:var(--serif-body);
+    font-weight:300; font-style:italic;
+    font-size:clamp(1.18rem, 2.4vw, 1.5rem);
+    line-height:1.5; max-width:34rem;
+    color:#d9cdb8; margin:0;
+  }
+  .byline{
+    display:flex; align-items:baseline; flex-wrap:wrap; gap:0.55rem;
+    margin-top:2.6rem; padding-top:1.5rem;
+    border-top:1px solid var(--rule-dark);
+    font-family:var(--sans);
+  }
+  .byline__name{
+    font-weight:600; font-size:0.92rem; letter-spacing:0.02em;
+    color:#f3ead8;
+  }
+  .byline__role{
+    font-size:0.74rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--muted-dark);
+  }
+  .byline__date{
+    margin-left:auto;
+    font-size:0.74rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--muted-dark);
+  }
+
+  /* ---------- Article ---------- */
+  .article{
+    max-width:var(--measure);
+    margin:0 auto;
+    padding:4.2rem 1.4rem 1rem;
+  }
+  .article p{ margin:0 0 1.5rem; }
+
+  .lead{ margin-bottom:1.7rem; }
+  .lead::first-letter{
+    font-family:var(--serif-display);
+    font-weight:800;
+    float:left;
+    font-size:5.4rem;
+    line-height:0.78;
+    padding:0.06em 0.12em 0 0;
+    margin:0.02em 0.02em 0 0;
+    color:var(--gold);
+  }
+
+  /* an emphasized stand-alone line */
+  .turn{
+    font-family:var(--serif-display);
+    font-optical-sizing:auto;
+    font-weight:600; font-style:italic;
+    font-size:clamp(1.4rem, 3.2vw, 1.95rem);
+    line-height:1.32;
+    color:#2a241b;
+    margin:2.4rem 0;
+  }
+  .turn .accent{ color:var(--gold); font-style:normal; }
+
+  /* ---------- Signature pull quote ---------- */
+  .pullquote{
+    margin:3.6rem 0;
+    text-align:center;
+  }
+  .pullquote__rule{
+    width:54px; height:1px; background:var(--gold);
+    margin:0 auto 2.1rem; border:0;
+  }
+  .pullquote__rule--btm{ margin:2.1rem auto 0; }
+  .pullquote blockquote{
+    margin:0;
+    font-family:var(--serif-display);
+    font-optical-sizing:auto;
+    font-weight:800;
+    font-size:clamp(2.3rem, 6.4vw, 3.7rem);
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  .pullquote .em{ color:var(--gold); }
+
+  /* ---------- Closing line ---------- */
+  .closing{
+    font-family:var(--serif-display);
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(1.5rem, 3.6vw, 2.15rem);
+    line-height:1.28;
+    color:var(--ink);
+    border-left:3px solid var(--gold);
+    padding:0.2rem 0 0.2rem 1.4rem;
+    margin:3.4rem 0 1rem;
+  }
+
+  /* signoff */
+  .signoff{
+    max-width:var(--measure); margin:2.6rem auto 0; padding:0 1.4rem;
+    display:flex; align-items:center; gap:0.8rem;
+    color:var(--muted-paper);
+  }
+  .signoff::before, .signoff::after{
+    content:""; height:1px; flex:1; background:var(--rule-paper);
+  }
+  .signoff span{
+    font-family:var(--sans); font-size:0.72rem;
+    letter-spacing:0.24em; text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  /* ---------- Footer ---------- */
+  .footer{
+    background:var(--ink); color:var(--muted-dark);
+    margin-top:4.5rem;
+    padding:3.4rem 1.4rem 3rem;
+    border-top:3px solid var(--gold);
+  }
+  .footer__inner{
+    max-width:54rem; margin:0 auto;
+    display:flex; flex-direction:column; align-items:center;
+    gap:1.6rem; text-align:center;
+  }
+  .footer__name{
+    font-family:var(--serif-display); font-weight:600;
+    font-size:1.25rem; color:#f3ead8;
+  }
+  .footer__role{
+    font-family:var(--sans); font-size:0.72rem;
+    letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--muted-dark); margin-top:0.35rem;
+  }
+  .footer__counter img{
+    height:24px; border-radius:3px; vertical-align:middle;
+  }
+  .footer__links{ display:flex; gap:1.4rem; }
+  .footer__links a{
+    font-family:var(--sans); font-size:0.72rem;
+    letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--muted-dark); text-decoration:none;
+    transition:color .2s ease;
+  }
+  .footer__links a:hover{ color:var(--gold-on-dark); }
+  .footer__fine{
+    font-family:var(--sans); font-size:0.68rem;
+    letter-spacing:0.04em; color:#6f6655;
+  }
+
+  /* ---------- Load motion (restrained) ---------- */
+  .reveal{ opacity:0; transform:translateY(14px); animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  .reveal.d1{ animation-delay:.06s; }
+  .reveal.d2{ animation-delay:.16s; }
+  .reveal.d3{ animation-delay:.26s; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ animation:none; opacity:1; transform:none; }
+    .nav{ backdrop-filter:none; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:560px){
+    body{ font-size:1.1rem; line-height:1.68; }
+    .nav__inner{ padding:0.7rem 1.1rem; }
+    .nav__links{ gap:1.1rem; }
+    .wordmark{ font-size:0.7rem; letter-spacing:0.16em; }
+    .masthead{ padding:7rem 1.2rem 3.2rem; }
+    .lead::first-letter{ font-size:4.4rem; }
+    .byline__date{ margin-left:0; width:100%; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a class="wordmark" href="index.html">IBUKUN <span>·</span> PERSPECTIVES</a>
+      <div class="nav__links">
+        <a href="index.html">Home</a>
+        <a href="https://www.linkedin.com/in/ibukun-oluwafemi-584922379" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="masthead__inner">
+      <p class="kicker reveal d1">Essay · On Reading in the Age of AI</p>
+      <h1 class="headline reveal d2">The Books That Read You Back</h1>
+      <p class="dek reveal d3">Artificial intelligence will hand everyone the same summaries. What it can never hand you is the reader you become.</p>
+      <div class="byline reveal d3">
+        <span class="byline__name">Oluwafemi Ibukun Williams</span>
+        <span class="byline__role">Petroleum Analyst · DevOps Learner · Writer</span>
+        <span class="byline__date">Lomé · June 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Article -->
+  <article class="article">
+    <p class="lead">In the age of AI, everyone is going to have access to the same summaries. Everyone is going to ask for the same key takeaways. Everyone will generate the same polished notes. The edge is no longer your access to intelligence.</p>
+
+    <p class="turn">The real edge is what you bring to it as a human being — <span class="accent">your judgment, your taste, and a point of view that is uniquely yours.</span></p>
+
+    <p>But there is a much deeper benefit in reading. Because after a while, the books you read start reading you. And by that I mean: they reveal the stories you tell yourself, the fears you protect, the assumptions you have inherited, and the parts of life you still do not understand.</p>
+
+    <p>A great book works like a great song. You hear it once and you enjoy it. Then you hear it again years later, and somehow it knows exactly where you are in your life.</p>
+
+    <div class="pullquote">
+      <hr class="pullquote__rule" />
+      <blockquote>The song didn't change.<br /><span class="em">You did.</span></blockquote>
+      <hr class="pullquote__rule pullquote__rule--btm" />
+    </div>
+
+    <p class="closing">That is why I am yet to meet a great leader who does not read.</p>
+  </article>
+
+  <div class="signoff"><span>Ibukun · Perspectives</span></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div>
+        <div class="footer__name">Oluwafemi Ibukun Williams</div>
+        <div class="footer__role">Petroleum Analyst · DevOps Learner · Writer</div>
+      </div>
+
+      <a class="footer__counter" href="https://hits.seeyoufarm.com" target="_blank" rel="noopener" aria-label="Visitor count">
+        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fibkwilliams1.github.io%2Fthe-books-that-read-you-back.html&count_bg=%23B8862E&title_bg=%23231E18&title=readers&edge_flat=false" alt="Readers — today / total" />
+      </a>
+
+      <div class="footer__links">
+        <a href="index.html">More Perspectives</a>
+        <a href="https://www.linkedin.com/in/ibukun-oluwafemi-584922379" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+
+      <div class="footer__fine">© 2026 Oluwafemi Ibukun Williams · ibkwilliams1.github.io</div>
+    </div>
+  </footer>
+
+  <!-- GoatCounter -->
+  <script data-goatcounter="https://ibkwilliams1.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</body>
+</html>
