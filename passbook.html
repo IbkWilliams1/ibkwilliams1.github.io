@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooperative Digital Passbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:    #0a0a0f;
+      --bg2:   #12121a;
+      --bg3:   #1a1a26;
+      --gold:  #c8a84b;
+      --gdim:  #8a7234;
+      --blue:  #4b8fc8;
+      --green: #4bc87a;
+      --red:   #c84b4b;
+      --text:  #e8e4d8;
+      --tdim:  #9e9a8e;
+      --bdr:   rgba(200,168,75,.15);
+      --bdrh:  rgba(200,168,75,.35);
+      --r:     8px;
+      --rl:    16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
+
+    /* ── Screens ── */
+    .screen{display:none;min-height:100vh;flex-direction:column}
+    .screen.active{display:flex}
+
+    /* ── Nav ── */
+    nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .nav-brand{font-family:'Playfair Display',serif;color:var(--gold);font-size:1rem;font-weight:600;white-space:nowrap}
+    .nav-sub{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--tdim);letter-spacing:.08em;text-transform:uppercase}
+    .nav-right{display:flex;gap:8px;align-items:center;flex-shrink:0}
+
+    /* ── Buttons ── */
+    .btn{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.05em;padding:8px 16px;border-radius:var(--r);border:1px solid transparent;cursor:pointer;transition:all .2s;text-transform:uppercase;white-space:nowrap}
+    .btn-primary{background:var(--gold);color:#0a0a0f;border-color:var(--gold);font-weight:600}
+    .btn-primary:hover{background:#d4b55a}
+    .btn-ghost{background:transparent;color:var(--tdim);border-color:var(--bdr)}
+    .btn-ghost:hover{border-color:var(--bdrh);color:var(--text)}
+    .btn-danger{background:transparent;color:var(--red);border-color:rgba(200,75,75,.3)}
+    .btn-danger:hover{background:rgba(200,75,75,.1)}
+    .btn-sm{padding:5px 10px;font-size:.65rem}
+
+    /* ── Layout ── */
+    main{flex:1;max-width:960px;width:100%;margin:0 auto;padding:24px 16px}
+
+    /* ── Cards ── */
+    .card{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px;margin-bottom:16px}
+    .card-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--gold);margin-bottom:16px}
+
+    /* ── Stat grid ── */
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+    .stat-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:16px}
+    .stat-label{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tdim);margin-bottom:6px}
+    .stat-value{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--gold);font-weight:600}
+    .stat-value.g{color:var(--green)}.stat-value.b{color:var(--blue)}.stat-value.r{color:var(--red)}
+
+    /* ── Tabs ── */
+    .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--bdr);overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tab{font-family:'DM Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;padding:10px 14px;border:none;background:transparent;color:var(--tdim);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all .2s}
+    .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .tab:hover:not(.active){color:var(--text)}
+    .tab-panel{display:none}.tab-panel.active{display:block}
+
+    /* ── Forms ── */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+    .form-group label{font-family:'DM Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tdim)}
+    .form-group input,.form-group select,.form-group textarea{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;transition:border-color .2s;width:100%}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gdim)}
+    .form-group select option{background:var(--bg2)}
+    @media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+    /* ── Table ── */
+    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    table{width:100%;border-collapse:collapse;font-size:.85rem}
+    thead th{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tdim);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bdr);white-space:nowrap}
+    tbody td{padding:10px 12px;border-bottom:1px solid rgba(200,168,75,.06)}
+    tbody tr:hover{background:rgba(200,168,75,.03)}
+    tbody tr:last-child td{border-bottom:none}
+    .ap{color:var(--green);font-family:'DM Mono',monospace}
+    .an{color:var(--red);font-family:'DM Mono',monospace}
+    .ab{color:var(--blue);font-family:'DM Mono',monospace}
+
+    /* ── Login ── */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:var(--bg)}
+    .login-box{width:100%;max-width:380px}
+    .login-header{text-align:center;margin-bottom:32px}
+    .login-title{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--gold);margin-bottom:8px}
+    .login-sub{font-family:'DM Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--tdim)}
+    .role-tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--bg3);border-radius:var(--r);padding:4px}
+    .role-tab{flex:1;padding:8px;text-align:center;font-family:'DM Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;border:none;background:transparent;color:var(--tdim);cursor:pointer;border-radius:6px;transition:all .2s}
+    .role-tab.active{background:var(--gold);color:#0a0a0f;font-weight:600}
+
+    /* ── Badges ── */
+    .badge{display:inline-block;font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:20px;border:1px solid;white-space:nowrap}
+    .bg{color:var(--gold);border-color:var(--gdim);background:rgba(200,168,75,.1)}
+    .bgg{color:var(--green);border-color:rgba(75,200,122,.3);background:rgba(75,200,122,.1)}
+    .bbl{color:var(--blue);border-color:rgba(75,143,200,.3);background:rgba(75,143,200,.1)}
+    .br{color:var(--red);border-color:rgba(200,75,75,.3);background:rgba(200,75,75,.1)}
+
+    /* ── Alerts ── */
+    .alert{padding:10px 14px;border-radius:var(--r);font-size:.85rem;margin-bottom:12px}
+    .ae{background:rgba(200,75,75,.12);border:1px solid rgba(200,75,75,.25);color:#e88}
+    .as{background:rgba(75,200,122,.12);border:1px solid rgba(75,200,122,.25);color:#7e7}
+    .ai{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.2);color:var(--tdim)}
+
+    /* ── Passbook header ── */
+    .pb-header{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--bdr);border-radius:var(--rl);padding:24px 20px;margin-bottom:20px;position:relative;overflow:hidden}
+    .pb-header::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(200,168,75,.07),transparent)}
+    .pb-name{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:4px}
+    .pb-coop{font-family:'DM Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:16px}
+
+    /* ── Borrow bar ── */
+    .bar-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:6px}
+    .bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:3px;transition:width .4s}
+
+    /* ── Empty ── */
+    .empty{text-align:center;padding:40px 20px;color:var(--tdim);font-size:.85rem}
+    .empty-ico{font-size:2rem;margin-bottom:12px;opacity:.4}
+
+    /* ── Modal ── */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:16px}
+    .overlay.open{display:flex}
+    .modal{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:24px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+    .modal-lg{max-width:560px}
+    .modal-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--gold);margin-bottom:16px}
+    .modal-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+    /* ── Coop grid ── */
+    .coop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+    .coop-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .2s}
+    .coop-card:hover{border-color:var(--bdrh);transform:translateY(-1px)}
+    .coop-card-name{font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:4px}
+    .coop-card-meta{font-size:.75rem;color:var(--tdim)}
+
+    /* ── Scrollable lists ── */
+    .tx-list{max-height:360px;overflow-y:auto}
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--gdim);border-radius:3px}
+
+    /* ── Utils ── */
+    .flex{display:flex}.fb{justify-content:space-between;align-items:center}.fc{justify-content:center;align-items:center}
+    .g8{gap:8px}.g12{gap:12px}
+    .mt4{margin-top:4px}.mt8{margin-top:8px}.mt16{margin-top:16px}.mb16{margin-bottom:16px}.mb8{margin-bottom:8px}
+    .tdim{color:var(--tdim)}.tg{color:var(--gold)}.tgr{color:var(--green)}.tr{color:var(--red)}
+    .ts{font-size:.8rem}.tx{font-size:.68rem;font-family:'DM Mono',monospace}
+    .mono{font-family:'DM Mono',monospace}.bold{font-weight:600}.wf{width:100%}
+    .divider{height:1px;background:var(--bdr);margin:16px 0}
+    .sec-head{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:4px}
+    .sec-sub{font-size:.8rem;color:var(--tdim);margin-bottom:20px}
+    @media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}nav{padding:10px 14px}}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="s-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-header">
+        <div class="login-title">Cooperative Passbook</div>
+        <div class="login-sub">Digital Record-Keeping System</div>
+      </div>
+
+      <div class="card">
+        <div class="role-tabs">
+          <button class="role-tab active" id="rtab-t" onclick="setRole('treasurer')">Treasurer</button>
+          <button class="role-tab" id="rtab-m" onclick="setRole('member')">Member</button>
+        </div>
+
+        <!-- Treasurer -->
+        <div id="l-treas">
+          <div id="l-setup">
+            <p class="ts tdim mb16">First time? Create your treasurer account.</p>
+            <div class="form-group"><label>Your Name</label><input id="su-name" type="text" placeholder="e.g. Mrs. Caroline Daramola"></div>
+            <div class="form-group"><label>Password (min 6 chars)</label><input id="su-pass" type="password" placeholder="••••••"></div>
+            <div class="form-group"><label>Confirm Password</label><input id="su-pass2" type="password" placeholder="••••••" onkeydown="if(e(event))doSetup()"></div>
+            <div id="su-err" class="alert ae" style="display:none"></div>
+            <button class="btn btn-primary wf" onclick="doSetup()">Create Account</button>
+          </div>
+          <div id="l-signin">
+            <div class="form-group"><label>Password</label><input id="t-pass" type="password" placeholder="Enter password" onkeydown="if(e(event))doTreasLogin()"></div>
+            <div id="t-err" class="alert ae" style="display:none"></div>
+            <button class="btn btn-primary wf" onclick="doTreasLogin()">Sign In as Treasurer</button>
+          </div>
+        </div>
+
+        <!-- Member -->
+        <div id="l-member" style="display:none">
+          <div class="form-group"><label>Member ID</label><input id="m-id" type="text" placeholder="e.g. M001"></div>
+          <div class="form-group"><label>4-Digit PIN</label><input id="m-pin" type="password" maxlength="4" inputmode="numeric" placeholder="••••" onkeydown="if(e(event))doMemberLogin()"></div>
+          <div id="m-err" class="alert ae" style="display:none"></div>
+          <button class="btn btn-primary wf" onclick="doMemberLogin()">View My Passbook</button>
+          <p class="tx tdim mt8" style="text-align:center">Member ID and PIN are provided by the treasurer</p>
+        </div>
+      </div>
+
+      <p class="tx tdim" style="text-align:center;margin-top:12px">Records stored on this device &bull; Export any time</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TREASURER ═══════════════════════ -->
+<div id="s-treas" class="screen">
+  <nav>
+    <div>
+      <div class="nav-brand">Cooperative Passbook</div>
+      <div class="nav-sub" id="nav-coop-name">Treasurer Dashboard</div>
+    </div>
+    <div class="nav-right">
+      <span class="tx tdim" id="nav-treas-name"></span>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Coop selector -->
+    <div id="coop-sel">
+      <div class="sec-head">Select a Cooperative</div>
+      <div class="sec-sub">Choose which cooperative to manage</div>
+      <div class="coop-grid" id="coop-grid"></div>
+      <button class="btn btn-ghost btn-sm" onclick="openM('mo-add-coop')">+ Add Cooperative</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="t-dash" style="display:none">
+      <div class="flex fb mb16">
+        <div>
+          <div class="sec-head" id="d-coop-name"></div>
+          <div class="sec-sub" id="d-coop-desc" style="margin-bottom:0"></div>
+        </div>
+        <div class="flex g8">
+          <button class="btn btn-ghost btn-sm" id="btn-switch" onclick="showCoopSel()">Switch</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="stats-row" id="sum-stats"></div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(event,'members')">Members</button>
+        <button class="tab" onclick="switchTab(event,'record')">Record Entry</button>
+        <button class="tab" onclick="switchTab(event,'ledger')">Ledger</button>
+        <button class="tab" onclick="switchTab(event,'loans')">Loans</button>
+      </div>
+
+      <!-- MEMBERS -->
+      <div class="tab-panel active" id="tp-members">
+        <div class="flex fb mb16">
+          <span class="ts tdim">All registered members</span>
+          <button class="btn btn-primary btn-sm" onclick="openM('mo-add-member')">+ Add Member</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Regular Savings</th><th>Special Savings</th><th>Shares</th><th>Loan Balance</th><th>Available to Borrow</th><th></th></tr></thead>
+            <tbody id="tb-members"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="em-members"><div class="empty-ico">👥</div>No members yet. Add your first member above.</div>
+      </div>
+
+      <!-- RECORD ENTRY -->
+      <div class="tab-panel" id="tp-record">
+        <div class="card">
+          <div class="card-title">Record a Transaction</div>
+          <div class="form-row">
+            <div class="form-group"><label>Member</label>
+              <select id="tx-member"><option value="">Select member…</option></select>
+            </div>
+            <div class="form-group"><label>Transaction Type</label>
+              <select id="tx-type" onchange="txHint()">
+                <option value="regular_savings">Regular Savings — Credit</option>
+                <option value="special_savings">Special Savings — Credit</option>
+                <option value="shares">Share Savings — Credit</option>
+                <option value="special_withdrawal">Special Savings — Withdrawal</option>
+                <option value="loan_disbursement">Loan — Disbursement</option>
+                <option value="loan_repayment">Loan — Repayment</option>
+                <option value="share_return">Share Return — Credit</option>
+              </select>
+            </div>
+          </div>
+          <div id="tx-hint" class="alert ai mb16">Regular monthly contributions by the member.</div>
+          <div class="form-row">
+            <div class="form-group"><label>Amount (₦)</label><input id="tx-amt" type="number" min="0" step="0.01" placeholder="0.00"></div>
+            <div class="form-group"><label>Date</label><input id="tx-date" type="date"></div>
+          </div>
+          <div class="form-group"><label>Note (optional)</label><input id="tx-note" type="text" placeholder="e.g. June 2026 contribution"></div>
+          <div id="tx-err" class="alert ae" style="display:none"></div>
+          <div id="tx-ok" class="alert as" style="display:none"></div>
+          <button class="btn btn-primary" onclick="recordTx()">Save Entry</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Distribute Share Returns</div>
+          <p class="ts tdim mb16">Enter the total interest pool collected from loans. It will be split among members in proportion to their share holdings.</p>
+          <div class="form-row">
+            <div class="form-group"><label>Total Interest Pool (₦)</label><input id="di-amt" type="number" min="0" step="0.01" placeholder="0.00" oninput="previewDist()"></div>
+            <div class="form-group"><label>Period Label</label><input id="di-period" type="text" placeholder="e.g. Q1 2026"></div>
+          </div>
+          <div id="di-preview"></div>
+          <div id="di-err" class="alert ae" style="display:none"></div>
+          <div id="di-ok" class="alert as" style="display:none"></div>
+          <button class="btn btn-primary" onclick="distributeDividends()">Distribute</button>
+        </div>
+      </div>
+
+      <!-- LEDGER -->
+      <div class="tab-panel" id="tp-ledger">
+        <div class="flex fb mb16" style="flex-wrap:wrap;gap:8px">
+          <span class="ts tdim">All recorded transactions — newest first</span>
+          <div class="flex g8">
+            <select id="lf-member" style="background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:6px 10px;border-radius:6px;font-size:.78rem" onchange="renderLedger()">
+              <option value="">All members</option>
+            </select>
+            <select id="lf-type" style="background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:6px 10px;border-radius:6px;font-size:.78rem" onchange="renderLedger()">
+              <option value="">All types</option>
+              <option value="regular_savings">Regular Savings</option>
+              <option value="special_savings">Special Savings</option>
+              <option value="shares">Shares</option>
+              <option value="special_withdrawal">Special Withdrawal</option>
+              <option value="loan_disbursement">Loan Out</option>
+              <option value="loan_repayment">Loan Repayment</option>
+              <option value="share_return">Share Return</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Member</th><th>Type</th><th>Amount</th><th>Note</th><th>Recorded</th><th></th></tr></thead>
+            <tbody id="tb-ledger"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="em-ledger"><div class="empty-ico">📒</div>No transactions yet.</div>
+      </div>
+
+      <!-- LOANS -->
+      <div class="tab-panel" id="tp-loans">
+        <p class="ts tdim mb16">Loan positions based on recorded disbursements and repayments. Borrowing limit = 2× share capital.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Member</th><th>Share Capital</th><th>Max Loan (2×)</th><th>Disbursed</th><th>Repaid</th><th>Outstanding</th><th>Remaining Limit</th></tr></thead>
+            <tbody id="tb-loans"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="em-loans"><div class="empty-ico">🏦</div>No members yet.</div>
+      </div>
+    </div><!-- /t-dash -->
+  </main>
+</div>
+
+<!-- ═══════════════════════ MEMBER ═══════════════════════ -->
+<div id="s-member" class="screen">
+  <nav>
+    <div>
+      <div class="nav-brand">My Passbook</div>
+      <div class="nav-sub" id="m-nav-coop"></div>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="pb-header">
+      <div class="pb-name" id="m-name"></div>
+      <div class="pb-coop" id="m-coop"></div>
+      <div class="tx tdim" id="m-id-display"></div>
+    </div>
+
+    <div class="stats-row" id="m-stats"></div>
+
+    <div class="card">
+      <div class="card-title">Borrowing Capacity</div>
+      <div id="m-borrow"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Transaction History</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th></tr></thead>
+          <tbody id="m-tx-body"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="m-tx-empty"><div class="empty-ico">📋</div>No transactions recorded yet.</div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════ MODALS ═══════════════════════ -->
+
+<div class="overlay" id="mo-add-coop">
+  <div class="modal">
+    <div class="modal-title">Add Cooperative</div>
+    <div class="form-group"><label>Full Name</label><input id="nc-name" type="text" placeholder="e.g. Ayede Ekiti Kajola Cooperative Thrift and Credit Society Ltd"></div>
+    <div class="form-group"><label>Short Note (optional)</label><input id="nc-desc" type="text" placeholder="e.g. Thrift and Credit Society"></div>
+    <div id="nc-err" class="alert ae" style="display:none"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeM('mo-add-coop')">Cancel</button>
+      <button class="btn btn-primary" onclick="addCoop()">Add</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="mo-add-member">
+  <div class="modal">
+    <div class="modal-title">Add Member</div>
+    <div class="form-group"><label>Full Name</label><input id="nm-name" type="text" placeholder="e.g. Adewale Bukola"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Phone (optional)</label><input id="nm-phone" type="tel" placeholder="08012345678"></div>
+      <div class="form-group"><label>4-Digit PIN</label><input id="nm-pin" type="password" maxlength="4" inputmode="numeric" placeholder="••••"></div>
+    </div>
+    <div id="nm-err" class="alert ae" style="display:none"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeM('mo-add-member')">Cancel</button>
+      <button class="btn btn-primary" onclick="addMember()">Add Member</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="mo-member-detail">
+  <div class="modal modal-lg">
+    <div class="modal-title" id="det-name"></div>
+    <div class="tx tdim mb16" id="det-meta"></div>
+    <div class="stats-row" id="det-stats" style="margin-bottom:16px"></div>
+    <div class="divider"></div>
+    <div class="tx tdim mb8">Transaction history</div>
+    <div class="tx-list">
+      <table style="width:100%">
+        <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th></tr></thead>
+        <tbody id="det-tx"></tbody>
+      </table>
+    </div>
+    <div class="modal-foot" style="justify-content:space-between">
+      <button class="btn btn-danger btn-sm" onclick="promptDeleteMember()">Delete Member</button>
+      <button class="btn btn-ghost" onclick="closeM('mo-member-detail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="mo-confirm">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-title" id="cf-title">Confirm</div>
+    <p class="ts mb16" id="cf-msg"></p>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeM('mo-confirm')">Cancel</button>
+      <button class="btn btn-danger" id="cf-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ──────────────────────── DATA ────────────────────────
+const KEY = 'coopPassbookV1';
+
+function db() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || blank(); }
+  catch { return blank(); }
+}
+function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+function blank() { return { treasurer: null, coops: [], members: [], txs: [] }; }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function h(s) { let v=0; for(let i=0;i<s.length;i++) v=Math.imul(31,v)+s.charCodeAt(i)|0; return v.toString(36); }
+
+// ──────────────────────── CALC ────────────────────────
+function balances(memberId, d) {
+  const txs = d.txs.filter(t => t.memberId === memberId);
+  let reg=0, spc=0, shr=0, lo=0, lr=0;
+  for (const t of txs) {
+    if (t.type==='regular_savings')    reg += t.amount;
+    else if (t.type==='special_savings')    spc += t.amount;
+    else if (t.type==='shares')             shr += t.amount;
+    else if (t.type==='share_return')       shr += t.amount;
+    else if (t.type==='special_withdrawal') spc -= t.amount;
+    else if (t.type==='loan_disbursement')  lo  += t.amount;
+    else if (t.type==='loan_repayment')     lr  += t.amount;
+  }
+  const loanBal = lo - lr;
+  const maxLoan = shr * 2;
+  return { reg, spc, shr, lo, lr, loanBal, maxLoan, avail: Math.max(0, maxLoan - loanBal) };
+}
+
+function coopStats(coopId, d) {
+  const mems = d.members.filter(m => m.coopId === coopId);
+  let tReg=0, tSpc=0, tShr=0, tLoan=0;
+  for (const m of mems) {
+    const b = balances(m.id, d);
+    tReg += b.reg; tSpc += b.spc; tShr += b.shr; tLoan += b.loanBal;
+  }
+  return { mc: mems.length, tc: d.txs.filter(t=>t.coopId===coopId).length, tReg, tSpc, tShr, tLoan };
+}
+
+// ──────────────────────── FORMAT ────────────────────────
+const N = n => '₦' + Number(n).toLocaleString('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2});
+const D = s => s ? new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+const TS = s => s ? new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+
+const TX_LABELS = {
+  regular_savings:'Regular Savings', special_savings:'Special Savings',
+  shares:'Share Savings', share_return:'Share Return',
+  special_withdrawal:'Special Withdrawal',
+  loan_disbursement:'Loan Disbursed', loan_repayment:'Loan Repayment'
+};
+const TX_BADGE = { loan_disbursement:'br', special_withdrawal:'br', loan_repayment:'bbl', share_return:'bg' };
+const TX_AMT   = { loan_disbursement:'an', special_withdrawal:'an', loan_repayment:'ab' };
+function tl(type) { return TX_LABELS[type] || type; }
+function bc(type) { return TX_BADGE[type] || 'bgg'; }
+function ac(type) { return TX_AMT[type] || 'ap'; }
+function isDebit(type) { return type==='loan_disbursement'||type==='special_withdrawal'; }
+
+// ──────────────────────── STATE ────────────────────────
+let S = { coopId: null, memberId: null };
+let _delMemberId = null;
+function e(ev) { return ev.key === 'Enter'; }
+
+// ──────────────────────── AUTH ────────────────────────
+function setRole(role) {
+  document.getElementById('rtab-t').classList.toggle('active', role==='treasurer');
+  document.getElementById('rtab-m').classList.toggle('active', role==='member');
+  document.getElementById('l-treas').style.display = role==='treasurer' ? '' : 'none';
+  document.getElementById('l-member').style.display = role==='member' ? '' : 'none';
+}
+
+function doSetup() {
+  const d = db();
+  const name  = v('su-name').trim();
+  const pass  = v('su-pass');
+  const pass2 = v('su-pass2');
+  const err   = document.getElementById('su-err');
+  if (!name)            return err_(err,'Enter your name.');
+  if (pass.length < 6)  return err_(err,'Password must be at least 6 characters.');
+  if (pass !== pass2)   return err_(err,'Passwords do not match.');
+  d.treasurer = { name, ph: h(pass) };
+  save(d);
+  enterTreas(d);
+}
+
+function doTreasLogin() {
+  const d   = db();
+  const err = document.getElementById('t-err');
+  if (!d.treasurer)            return err_(err,'No account found. Please set up first.');
+  if (h(v('t-pass')) !== d.treasurer.ph) return err_(err,'Incorrect password.');
+  enterTreas(d);
+}
+
+function doMemberLogin() {
+  const d    = db();
+  const raw  = v('m-id').trim();
+  const pin  = v('m-pin');
+  const err  = document.getElementById('m-err');
+  const mem  = d.members.find(m => m.id.toLowerCase()===raw.toLowerCase() || m.name.toLowerCase()===raw.toLowerCase());
+  if (!mem)                    return err_(err,'Member not found. Check your Member ID.');
+  if (h(pin) !== mem.ph)       return err_(err,'Incorrect PIN.');
+  enterMember(mem, d);
+}
+
+function logout() {
+  S = { coopId:null, memberId:null };
+  showScreen('login');
+}
+
+// ──────────────────────── SCREENS ────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-'+name).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function enterTreas(d) {
+  document.getElementById('nav-treas-name').textContent = d.treasurer.name;
+  showScreen('treas');
+  if (d.coops.length === 0) { openM('mo-add-coop'); return; }
+  if (d.coops.length === 1) { selectCoop(d.coops[0].id, d); return; }
+  showCoopSel();
+}
+
+function showCoopSel() {
+  const d = db();
+  document.getElementById('coop-sel').style.display = '';
+  document.getElementById('t-dash').style.display = 'none';
+  document.getElementById('coop-grid').innerHTML = d.coops.map(c => {
+    const s = coopStats(c.id, d);
+    return `<div class="coop-card" onclick="selectCoop('${c.id}')">
+      <div class="coop-card-name">${c.name}</div>
+      ${c.desc ? `<div class="coop-card-meta">${c.desc}</div>` : ''}
+      <div class="coop-card-meta mt4">${s.mc} member${s.mc!==1?'s':''} &bull; ${s.tc} transaction${s.tc!==1?'s':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectCoop(coopId, d) {
+  d = d || db();
+  const coop = d.coops.find(c => c.id === coopId);
+  if (!coop) return;
+  S.coopId = coopId;
+  document.getElementById('coop-sel').style.display = 'none';
+  document.getElementById('t-dash').style.display = '';
+  document.getElementById('d-coop-name').textContent = coop.name;
+  document.getElementById('d-coop-desc').textContent = coop.desc || '';
+  document.getElementById('nav-coop-name').textContent = coop.name;
+  document.getElementById('btn-switch').style.display = d.coops.length > 1 ? '' : 'none';
+  renderDash();
+}
+
+function enterMember(mem, d) {
+  const coop = d.coops.find(c => c.id === mem.coopId);
+  document.getElementById('m-name').textContent  = mem.name;
+  document.getElementById('m-coop').textContent  = coop ? coop.name : '';
+  document.getElementById('m-id-display').textContent = 'Member ID: ' + mem.id;
+  document.getElementById('m-nav-coop').textContent   = coop ? coop.name : '';
+  showScreen('member');
+  renderMemberView(mem.id, d);
+}
+
+// ──────────────────────── DASHBOARD ────────────────────────
+function renderDash() {
+  const d = db();
+  renderSummary(d);
+  renderMembers(d);
+  renderLedger(d);
+  renderLoans(d);
+  populateSelects(d);
+}
+
+function renderSummary(d) {
+  const s = coopStats(S.coopId, d);
+  document.getElementById('sum-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Members</div><div class="stat-value">${s.mc}</div></div>
+    <div class="stat-card"><div class="stat-label">Regular Savings</div><div class="stat-value g">${N(s.tReg)}</div></div>
+    <div class="stat-card"><div class="stat-label">Special Savings</div><div class="stat-value b">${N(s.tSpc)}</div></div>
+    <div class="stat-card"><div class="stat-label">Share Capital</div><div class="stat-value">${N(s.tShr)}</div></div>
+    <div class="stat-card"><div class="stat-label">Loans Outstanding</div><div class="stat-value r">${N(s.tLoan)}</div></div>`;
+}
+
+function renderMembers(d) {
+  const mems = d.members.filter(m => m.coopId === S.coopId);
+  const tb = document.getElementById('tb-members');
+  const em = document.getElementById('em-members');
+  if (!mems.length) { tb.innerHTML=''; em.style.display=''; return; }
+  em.style.display = 'none';
+  tb.innerHTML = mems.map(m => {
+    const b = balances(m.id, d);
+    return `<tr>
+      <td class="tx tdim">${m.id}</td>
+      <td><span class="bold">${m.name}</span>${m.phone?`<br><span class="tx tdim">${m.phone}</span>`:''}</td>
+      <td class="ap">${N(b.reg)}</td>
+      <td class="ab">${N(b.spc)}</td>
+      <td class="tg mono">${N(b.shr)}</td>
+      <td class="${b.loanBal>0?'an':'tdim'}">${N(b.loanBal)}</td>
+      <td class="${b.avail>0?'ap':'tdim'}">${N(b.avail)}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openMemberDetail('${m.id}')">View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderLedger(d) {
+  d = d || db();
+  const mf = document.getElementById('lf-member')?.value || '';
+  const tf = document.getElementById('lf-type')?.value   || '';
+  let txs = d.txs.filter(t => t.coopId === S.coopId);
+  if (mf) txs = txs.filter(t => t.memberId === mf);
+  if (tf) txs = txs.filter(t => t.type === tf);
+  txs.sort((a,b) => new Date(b.date)-new Date(a.date) || b.createdAt-a.createdAt);
+
+  const tb = document.getElementById('tb-ledger');
+  const em = document.getElementById('em-ledger');
+  if (!txs.length) { tb.innerHTML=''; em.style.display=''; return; }
+  em.style.display = 'none';
+  tb.innerHTML = txs.map(t => {
+    const mem = d.members.find(m => m.id===t.memberId);
+    return `<tr>
+      <td class="tx mono">${D(t.date)}</td>
+      <td>${mem ? mem.name : t.memberId}</td>
+      <td><span class="badge ${bc(t.type)}">${tl(t.type)}</span></td>
+      <td class="${ac(t.type)}">${isDebit(t.type)?'−':'+'}${N(t.amount)}</td>
+      <td class="tdim ts">${t.note||'—'}</td>
+      <td class="tx tdim">${TS(t.createdAt)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteTx('${t.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderLoans(d) {
+  const mems = d.members.filter(m => m.coopId === S.coopId);
+  const tb = document.getElementById('tb-loans');
+  const em = document.getElementById('em-loans');
+  if (!mems.length) { tb.innerHTML=''; em.style.display=''; return; }
+  em.style.display = 'none';
+  tb.innerHTML = mems.map(m => {
+    const b = balances(m.id, d);
+    return `<tr>
+      <td>${m.name}</td>
+      <td class="mono">${N(b.shr)}</td>
+      <td class="mono">${N(b.maxLoan)}</td>
+      <td class="${b.lo>0?'an':'tdim'}">${N(b.lo)}</td>
+      <td class="${b.lr>0?'ap':'tdim'}">${N(b.lr)}</td>
+      <td class="${b.loanBal>0?'an bold':'tdim'}">${N(b.loanBal)}</td>
+      <td class="${b.avail>0?'ap':'tdim'}">${N(b.avail)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function populateSelects(d) {
+  const mems = d.members.filter(m => m.coopId === S.coopId);
+  const opts = mems.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+  const txSel = document.getElementById('tx-member');
+  if (txSel) { const c=txSel.value; txSel.innerHTML='<option value="">Select member…</option>'+opts; txSel.value=c; }
+  const lfSel = document.getElementById('lf-member');
+  if (lfSel) { const c=lfSel.value; lfSel.innerHTML='<option value="">All members</option>'+opts; lfSel.value=c; }
+}
+
+// ──────────────────────── MEMBER VIEW ────────────────────────
+function renderMemberView(memberId, d) {
+  const b = balances(memberId, d);
+  document.getElementById('m-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Regular Savings</div><div class="stat-value g">${N(b.reg)}</div></div>
+    <div class="stat-card"><div class="stat-label">Special Savings</div><div class="stat-value b">${N(b.spc)}</div></div>
+    <div class="stat-card"><div class="stat-label">Share Capital</div><div class="stat-value">${N(b.shr)}</div></div>
+    <div class="stat-card"><div class="stat-label">Loan Balance</div><div class="stat-value ${b.loanBal>0?'r':''}">${N(b.loanBal)}</div></div>`;
+
+  const pct = b.maxLoan > 0 ? Math.min(100, (b.loanBal / b.maxLoan) * 100) : 0;
+  document.getElementById('m-borrow').innerHTML = `
+    <div class="flex fb mb8">
+      <div>
+        <div class="ts tdim">Available to borrow</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--green)">${N(b.avail)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="ts tdim">Maximum (2× shares)</div>
+        <div class="mono">${N(b.maxLoan)}</div>
+      </div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    <div class="tx tdim mt4">${N(b.loanBal)} used of ${N(b.maxLoan)} limit &bull; Share capital: ${N(b.shr)}</div>`;
+
+  const txs = d.txs.filter(t => t.memberId===memberId).sort((a,b) => new Date(b.date)-new Date(a.date));
+  const tb  = document.getElementById('m-tx-body');
+  const em  = document.getElementById('m-tx-empty');
+  if (!txs.length) { tb.innerHTML=''; em.style.display=''; return; }
+  em.style.display = 'none';
+  tb.innerHTML = txs.map(t => `
+    <tr>
+      <td class="tx mono">${D(t.date)}</td>
+      <td><span class="badge ${bc(t.type)}">${tl(t.type)}</span></td>
+      <td class="${ac(t.type)}">${isDebit(t.type)?'−':'+'}${N(t.amount)}</td>
+      <td class="tdim ts">${t.note||'—'}</td>
+    </tr>`).join('');
+}
+
+// ──────────────────────── ACTIONS ────────────────────────
+function addCoop() {
+  const d    = db();
+  const name = v('nc-name').trim();
+  const desc = v('nc-desc').trim();
+  const err  = document.getElementById('nc-err');
+  if (!name) return err_(err,'Enter the cooperative name.');
+  const coop = { id:'C'+uid(), name, desc, createdAt:Date.now() };
+  d.coops.push(coop);
+  save(d);
+  closeM('mo-add-coop');
+  if (d.coops.length===1) selectCoop(coop.id, d); else showCoopSel();
+}
+
+function addMember() {
+  const d    = db();
+  const name = v('nm-name').trim();
+  const ph   = v('nm-phone').trim();
+  const pin  = v('nm-pin');
+  const err  = document.getElementById('nm-err');
+  if (!name)                        return err_(err,"Enter the member's name.");
+  if (!/^\d{4}$/.test(pin))         return err_(err,'PIN must be exactly 4 digits.');
+  const idx  = d.members.filter(m=>m.coopId===S.coopId).length;
+  const mem  = { id:'M'+String(idx+1).padStart(3,'0'), coopId:S.coopId, name, phone:ph, ph:h(pin), createdAt:Date.now() };
+  d.members.push(mem);
+  save(d);
+  closeM('mo-add-member');
+  document.getElementById('nm-name').value='';
+  document.getElementById('nm-phone').value='';
+  document.getElementById('nm-pin').value='';
+  renderDash();
+}
+
+function recordTx() {
+  const d      = db();
+  const memId  = v('tx-member');
+  const type   = v('tx-type');
+  const amt    = parseFloat(v('tx-amt'));
+  const date   = v('tx-date');
+  const note   = v('tx-note').trim();
+  const err    = document.getElementById('tx-err');
+  const ok     = document.getElementById('tx-ok');
+  ok.style.display = 'none';
+  if (!memId)        return err_(err,'Select a member.');
+  if (!amt||amt<=0)  return err_(err,'Enter a valid amount greater than zero.');
+  if (!date)         return err_(err,'Select a date.');
+
+  if (type==='loan_disbursement') {
+    const b = balances(memId, d);
+    if (amt > b.avail) return err_(err,`Exceeds available borrowing limit. Available: ${N(b.avail)}`);
+  }
+
+  d.txs.push({ id:'T'+uid(), memberId:memId, coopId:S.coopId, type, amount:amt, date, note, createdAt:Date.now() });
+  save(d);
+  err.style.display='none';
+  ok.textContent='Entry saved successfully.';
+  ok.style.display='';
+  document.getElementById('tx-amt').value='';
+  document.getElementById('tx-note').value='';
+  renderDash();
+  setTimeout(()=>ok.style.display='none',3500);
+}
+
+function previewDist() {
+  const d     = db();
+  const total = parseFloat(document.getElementById('di-amt').value);
+  if (!total||total<=0) { document.getElementById('di-preview').innerHTML=''; return; }
+  const mems   = d.members.filter(m=>m.coopId===S.coopId);
+  const bals   = mems.map(m=>({...m, b:balances(m.id,d)}));
+  const tShr   = bals.reduce((s,m)=>s+m.b.shr,0);
+  if (!tShr)   { document.getElementById('di-preview').innerHTML='<p class="ts tdim">No share capital recorded yet.</p>'; return; }
+  document.getElementById('di-preview').innerHTML = `
+    <div class="table-wrap mt8"><table>
+      <thead><tr><th>Member</th><th>Shares</th><th>Return</th></tr></thead>
+      <tbody>${bals.filter(m=>m.b.shr>0).map(m=>`
+        <tr><td>${m.name}</td><td class="mono">${N(m.b.shr)}</td>
+        <td class="ap">${N((m.b.shr/tShr)*total)}</td></tr>`).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+function distributeDividends() {
+  const d      = db();
+  const total  = parseFloat(document.getElementById('di-amt').value);
+  const period = document.getElementById('di-period').value.trim();
+  const err    = document.getElementById('di-err');
+  const ok     = document.getElementById('di-ok');
+  ok.style.display='none';
+  if (!total||total<=0) return err_(err,'Enter a valid total amount.');
+  const mems = d.members.filter(m=>m.coopId===S.coopId);
+  const bals = mems.map(m=>({...m,b:balances(m.id,d)}));
+  const tShr = bals.reduce((s,m)=>s+m.b.shr,0);
+  if (!tShr) return err_(err,'No share capital recorded. Cannot distribute.');
+  const now = new Date().toISOString().slice(0,10);
+  for (const m of bals) {
+    if (m.b.shr<=0) continue;
+    d.txs.push({ id:'T'+uid(), memberId:m.id, coopId:S.coopId, type:'share_return',
+      amount: Math.round((m.b.shr/tShr)*total*100)/100,
+      date: now, note: period ? `Share return — ${period}` : 'Share return', createdAt:Date.now() });
+  }
+  save(d);
+  err.style.display='none';
+  ok.textContent=`Share returns distributed to ${bals.filter(m=>m.b.shr>0).length} member(s).`;
+  ok.style.display='';
+  document.getElementById('di-amt').value='';
+  document.getElementById('di-period').value='';
+  document.getElementById('di-preview').innerHTML='';
+  renderDash();
+  setTimeout(()=>ok.style.display='none',4000);
+}
+
+function deleteTx(txId) {
+  if (!confirm('Delete this transaction? This cannot be undone.')) return;
+  const d = db();
+  d.txs = d.txs.filter(t=>t.id!==txId);
+  save(d);
+  renderDash();
+  renderLedger(d);
+}
+
+function openMemberDetail(memberId) {
+  const d = db();
+  const m = d.members.find(x=>x.id===memberId);
+  if (!m) return;
+  _delMemberId = memberId;
+  const b = balances(memberId, d);
+  document.getElementById('det-name').textContent = m.name;
+  document.getElementById('det-meta').textContent = `ID: ${m.id}${m.phone?' · '+m.phone:''}`;
+  document.getElementById('det-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Regular</div><div class="stat-value g" style="font-size:1rem">${N(b.reg)}</div></div>
+    <div class="stat-card"><div class="stat-label">Special</div><div class="stat-value b" style="font-size:1rem">${N(b.spc)}</div></div>
+    <div class="stat-card"><div class="stat-label">Shares</div><div class="stat-value" style="font-size:1rem">${N(b.shr)}</div></div>
+    <div class="stat-card"><div class="stat-label">Loan Bal</div><div class="stat-value ${b.loanBal>0?'r':''}" style="font-size:1rem">${N(b.loanBal)}</div></div>`;
+  const txs = d.txs.filter(t=>t.memberId===memberId).sort((a,bx)=>new Date(bx.date)-new Date(a.date));
+  document.getElementById('det-tx').innerHTML = txs.length ? txs.map(t=>`
+    <tr>
+      <td class="tx mono">${D(t.date)}</td>
+      <td><span class="badge ${bc(t.type)}" style="font-size:.52rem">${tl(t.type)}</span></td>
+      <td class="${ac(t.type)}">${isDebit(t.type)?'−':'+'}${N(t.amount)}</td>
+      <td class="tdim ts">${t.note||'—'}</td>
+    </tr>`).join('')
+    : '<tr><td colspan="4" class="empty" style="padding:20px;text-align:center">No transactions yet</td></tr>';
+  openM('mo-member-detail');
+}
+
+function promptDeleteMember() {
+  const d = db();
+  const m = d.members.find(x=>x.id===_delMemberId);
+  if (!m) return;
+  document.getElementById('cf-title').textContent = 'Delete Member';
+  document.getElementById('cf-msg').textContent   = `Delete ${m.name} and all their transaction records? This cannot be undone.`;
+  document.getElementById('cf-ok').onclick = confirmDeleteMember;
+  closeM('mo-member-detail');
+  openM('mo-confirm');
+}
+
+function confirmDeleteMember() {
+  const d = db();
+  d.members = d.members.filter(m=>m.id!==_delMemberId);
+  d.txs     = d.txs.filter(t=>t.memberId!==_delMemberId);
+  save(d);
+  closeM('mo-confirm');
+  renderDash();
+}
+
+function exportCSV() {
+  const d    = db();
+  const coop = d.coops.find(c=>c.id===S.coopId);
+  const mems = d.members.filter(m=>m.coopId===S.coopId);
+  const txs  = d.txs.filter(t=>t.coopId===S.coopId).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const rows = [['Date','Member ID','Member Name','Type','Amount (₦)','Note','Recorded At']];
+  for (const t of txs) {
+    const m = mems.find(x=>x.id===t.memberId);
+    rows.push([t.date, t.memberId, m?m.name:'', tl(t.type), t.amount, t.note||'', new Date(t.createdAt).toISOString()]);
+  }
+  const csv  = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = (coop?coop.name.replace(/\s+/g,'_'):'cooperative')+'_records.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ──────────────────────── UI ────────────────────────
+function switchTab(event, name) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tp-'+name).classList.add('active');
+  if (name==='ledger') renderLedger();
+}
+
+function txHint() {
+  const hints = {
+    regular_savings:'Regular monthly contributions. Accumulates in the member\'s regular savings balance.',
+    special_savings:'Special savings credited to the member. Can be withdrawn on demand at any time.',
+    shares:'Share capital purchased by the member. Determines borrowing limit (up to 2×) and earns proportional returns from loan interest.',
+    special_withdrawal:'A withdrawal from the member\'s special savings. Reduces their special savings balance.',
+    loan_disbursement:'Loan paid out to the member. Must not exceed available limit (2× shares minus outstanding loan).',
+    loan_repayment:'Repayment made against an outstanding loan. Reduces the loan balance and restores borrowing capacity.',
+    share_return:'Interest return credited to the member\'s share capital, distributed in proportion to their shareholding.'
+  };
+  document.getElementById('tx-hint').textContent = hints[v('tx-type')] || '';
+}
+
+function openM(id)  { document.getElementById(id).classList.add('open'); document.querySelectorAll('#'+id+' .ae').forEach(e=>e.style.display='none'); }
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', ev => { if(ev.target===o) o.classList.remove('open'); }));
+
+function v(id) { return document.getElementById(id)?.value || ''; }
+function err_(el, msg) { el.textContent=msg; el.style.display=''; }
+
+// ──────────────────────── INIT ────────────────────────
+(function init() {
+  const d = db();
+  const hasTreas = !!d.treasurer;
+  document.getElementById('l-setup').style.display   = hasTreas ? 'none' : '';
+  document.getElementById('l-signin').style.display  = hasTreas ? '' : 'none';
+  document.getElementById('tx-date').valueAsDate = new Date();
+})();
+</script>
+</body>
+</html>
